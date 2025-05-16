@@ -1,6 +1,5 @@
 package com.example.sheets.models.db;
 
-import com.example.sheets.models.requests.CreateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
