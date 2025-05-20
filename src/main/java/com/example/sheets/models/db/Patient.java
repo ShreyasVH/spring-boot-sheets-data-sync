@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Getter
 @Setter
@@ -17,7 +18,7 @@ public class Patient {
     @Id
     private String id;
     private String name;
-    private String dateOfBirth;
+    private Date dateOfBirth;
     private String disease;
     private String bedType;
     private String hospitalId;
