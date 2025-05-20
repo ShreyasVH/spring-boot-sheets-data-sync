@@ -1,21 +1,26 @@
 package com.example.sheets.services.impl;
 
+import com.example.sheets.dtos.BedTypeCount;
 import com.example.sheets.models.db.Hospital;
 import com.example.sheets.models.db.Patient;
 import com.example.sheets.repositories.HospitalRepository;
 import com.example.sheets.repositories.PatientRepository;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.jobrunr.jobs.annotations.Job;
 import org.jobrunr.jobs.context.JobContext;
 import org.jobrunr.spring.annotations.Recurring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,10 +39,16 @@ public class JobService {
     @Autowired
     private PatientRepository patientRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     private final int batchSize = 2;
 
     @Value("${google.sheets.id}")
     private String sheetId;
+
+    @Value("${alert.email.to}")
+    private String alertEmailAddress;
 
     @Recurring(id = "sync-job", cron = "0 */1 * * *")
     @Job(name = "Sync job")
@@ -315,17 +326,108 @@ public class JobService {
     }
 
     @Recurring(id = "alert-job", cron = "30 23 * * *")
-    @Job(name = "Daily job")
-    public void dailyJob(JobContext jobContext) throws IOException {
+    @Job(name = "Alert job")
+    public void alertJob(JobContext jobContext) throws MessagingException {
         jobContext.logger().info("started job");
 
-        String sheetId = "1im3kg31RL7FDNL_V_R7tSwqNq66vgKgpvzrn0ADGzZs";
+        List<EmailTableRow> eligibleHospitals = getRowsForEmailTable();
+        if(!eligibleHospitals.isEmpty())
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String subject = String.format("Daily Occupancy Alert: Hospitals Exceeding 90%% Capacity – %s", dateFormat.format(new Date()));
 
-        ValueRange response = sheetsService.spreadsheets().values()
-                .get(sheetId, "Hospital!A2:E9")
-                .execute();
+            String content = getEmailContent(eligibleHospitals);
 
-//        jobContext.logger().info(response.getValues());
-        String sh = "sh";
+            emailService.sendEmail(alertEmailAddress, subject, content);
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    class EmailTableRow
+    {
+        private String id;
+        private String name;
+        private int generalBedCount;
+        private long generalBedOccupiedCount;
+        private int icuBedCount;
+        private long icuBedOccupiedCount;
+    }
+
+    private List<EmailTableRow> getRowsForEmailTable()
+    {
+        long hospitalCount = hospitalRepository.count();
+        long totalPages = (hospitalCount + batchSize - 1) / batchSize;
+
+        List<EmailTableRow> eligibleHospitals = new ArrayList<>();
+
+        int page = 0;
+        while(page < totalPages)
+        {
+            Pageable pageable = PageRequest.of(page, batchSize, Sort.by("id").ascending());
+            Page<Hospital> hospitalPage = hospitalRepository.findAll(pageable);
+            List<Hospital> hospitals = hospitalPage.getContent();
+
+            for(Hospital hospital: hospitals)
+            {
+                List<BedTypeCount> bedTypeCounts = patientRepository.countBedTypesByHospitalId(hospital.getId());
+
+                Map<String, Long> bedTypeCountMap = bedTypeCounts.stream().collect(Collectors.toMap(BedTypeCount::getBedType, BedTypeCount::getCount));
+
+                long generalBedsOccupied = bedTypeCountMap.getOrDefault("General", 0L);
+                long icuBedsOccupied = bedTypeCountMap.getOrDefault("ICU", 0L);
+
+                if(generalBedsOccupied * 1.0 / hospital.getGeneralBedCount() > 0.9 || icuBedsOccupied * 1.0 / hospital.getIcuBedCount() > 0.9)
+                {
+                    EmailTableRow emailTableRow = new EmailTableRow(hospital.getId(), hospital.getName(), hospital.getGeneralBedCount(), generalBedsOccupied, hospital.getIcuBedCount(), icuBedsOccupied);
+                    eligibleHospitals.add(emailTableRow);
+                }
+            }
+
+            page++;
+        }
+
+        return eligibleHospitals;
+    }
+
+    private String getEmailContent(List<EmailTableRow> eligibleHospitals)
+    {
+        StringBuilder content = new StringBuilder();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        content.append(String.format("<p>Please find below the list of hospitals whose occupancy exceeded 90%% as of %s:</p>", dateFormat.format(new Date())));
+
+        content.append("<table style=\"border-collapse: collapse\">");
+        content.append("<thead>");
+        content.append("<tr>");
+        content.append("<th style=\"border: 1px solid black; padding: 8px\">Id</th>");
+        content.append("<th style=\"border: 1px solid black; padding: 8px\">Name</th>");
+        content.append("<th style=\"border: 1px solid black; padding: 8px\">Total General Beds</th>");
+        content.append("<th style=\"border: 1px solid black; padding: 8px\">General Beds Occupied</th>");
+        content.append("<th style=\"border: 1px solid black; padding: 8px\">Total ICU Beds</th>");
+        content.append("<th style=\"border: 1px solid black; padding: 8px\">ICU Beds Occupied</th>");
+        content.append("</tr>");
+        content.append("</thead>");
+
+        content.append("<tbody>");
+
+        for(EmailTableRow row: eligibleHospitals)
+        {
+            content.append("<tr>");
+
+            content.append(String.format("<td style=\"border: 1px solid black; padding: 8px\">%s</td>", row.getId()));
+            content.append(String.format("<td style=\"border: 1px solid black; padding: 8px\">%s</td>", row.getName()));
+            content.append(String.format("<td style=\"border: 1px solid black; padding: 8px\">%d</td>", row.getGeneralBedCount()));
+            content.append(String.format("<td style=\"border: 1px solid black; padding: 8px\">%d</td>", row.getGeneralBedOccupiedCount()));
+            content.append(String.format("<td style=\"border: 1px solid black; padding: 8px\">%d</td>", row.getIcuBedCount()));
+            content.append(String.format("<td style=\"border: 1px solid black; padding: 8px\">%d</td>", row.getIcuBedOccupiedCount()));
+
+            content.append("</tr>");
+        }
+
+        content.append("</tbody>");
+        content.append("</table>");
+
+        return content.toString();
     }
 }
