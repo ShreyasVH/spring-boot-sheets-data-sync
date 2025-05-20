@@ -44,6 +44,8 @@ public class JobService {
 
     private final int batchSize = 2;
 
+    private final double occupancyThreshold = 0.9;
+
     @Value("${google.sheets.id}")
     private String sheetId;
 
@@ -377,7 +379,11 @@ public class JobService {
                 long generalBedsOccupied = bedTypeCountMap.getOrDefault("General", 0L);
                 long icuBedsOccupied = bedTypeCountMap.getOrDefault("ICU", 0L);
 
-                if(generalBedsOccupied * 1.0 / hospital.getGeneralBedCount() > 0.9 || icuBedsOccupied * 1.0 / hospital.getIcuBedCount() > 0.9)
+                if(
+                    generalBedsOccupied * 1.0 / hospital.getGeneralBedCount() > occupancyThreshold
+                            ||
+                    icuBedsOccupied * 1.0 / hospital.getIcuBedCount() > occupancyThreshold
+                )
                 {
                     EmailTableRow emailTableRow = new EmailTableRow(hospital.getId(), hospital.getName(), hospital.getGeneralBedCount(), generalBedsOccupied, hospital.getIcuBedCount(), icuBedsOccupied);
                     eligibleHospitals.add(emailTableRow);
