@@ -42,7 +42,7 @@ public class JobService {
     @Autowired
     private EmailService emailService;
 
-    private final int batchSize = 2;
+    private final int batchSize = 50;
 
     private final double occupancyThreshold = 0.9;
 
@@ -57,7 +57,9 @@ public class JobService {
     public void syncJob(JobContext jobContext) throws IOException, ParseException {
         jobContext.logger().info("started job");
 
+        jobContext.logger().info("syncing hospitals");
         syncHospitals();
+        jobContext.logger().info("syncing patients");
         syncPatients();
     }
 
@@ -333,6 +335,7 @@ public class JobService {
         jobContext.logger().info("started job");
 
         List<EmailTableRow> eligibleHospitals = getRowsForEmailTable();
+        jobContext.logger().info("Number of eligible hospitals: " + eligibleHospitals.size());
         if(!eligibleHospitals.isEmpty())
         {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
