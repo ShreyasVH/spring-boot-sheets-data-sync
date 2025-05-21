@@ -1,4 +1,4 @@
-package com.example.sheets.services.impl;
+package com.example.sheets.services;
 
 import com.example.sheets.dtos.BedTypeCount;
 import com.example.sheets.models.db.Hospital;
