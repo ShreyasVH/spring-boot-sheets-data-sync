@@ -1,0 +1,25 @@
+export PORT=
+export DEBUG_PORT=
+
+# maven 3.8.8 path
+export PATH=
+
+# java 17.0.7 path
+export PATH=
+
+export POSTGRES_IP=
+export POSTGRES_PORT=
+export POSTGRES_DB=
+export POSTGRES_USER=
+export POSTGRES_PASSWORD=
+
+export JOB_RUNNER_PORT=
+
+export ALERT_EMAIL_TO=
+export ALERT_EMAIL_FROM=
+export MAIL_APP_PASSWORD=
+
+export GOOGLE_SHEET_ID=
+
+# postgres 16.4 path
+export PATH=

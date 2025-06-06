@@ -3,3 +3,6 @@
 *.iml
 target
 .DS_Store
+service-account.json
+compile.log
+server.log
