@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.3.RELEASE</version>
+		<version>4.0.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
@@ -15,13 +15,25 @@
 	<description>Demo project for Spring Boot Sheets Integration</description>
 
 	<properties>
-		<java.version>8</java.version>
+		<java.version>25</java.version>
+		<lombok.version>1.18.42</lombok.version>
+		<flyway.version>11.20.1</flyway.version>
+		<google.client.version>2.8.1</google.client.version>
+		<google.client.jetty.version>1.39.0</google.client.jetty.version>
+		<google.sheets.version>v4-rev20251110-2.0.0</google.sheets.version>
+		<jobrunr.version>8.3.1</jobrunr.version>
+		<google.client.jackson.version>2.1.0-rc1</google.client.jackson.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-flyway</artifactId>
 		</dependency>
 
 		<dependency>
@@ -38,54 +50,60 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.24</version>
+			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
-			<version>6.4.4</version>
+			<version>${flyway.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+			<version>${flyway.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jobrunr</groupId>
-			<artifactId>jobrunr-spring-boot-2-starter</artifactId>
-			<version>6.1.3</version>
+			<artifactId>jobrunr-spring-boot-4-starter</artifactId>
+			<version>${jobrunr.version}</version>
 		</dependency>
 		<!-- you can use either Jackson, Gson or Yasson (Json-B compatible).
              Only choose one of the 3 dependencies below -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.11.0</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.fasterxml.jackson.core</groupId>-->
+<!--			<artifactId>jackson-databind</artifactId>-->
+<!--			<version>2.11.0</version>-->
+<!--		</dependency>-->
 
 		<!-- Google API Client -->
 		<dependency>
 			<groupId>com.google.api-client</groupId>
 			<artifactId>google-api-client</artifactId>
-			<version>1.34.1</version>
+			<version>${google.client.version}</version>
 		</dependency>
 
 		<!-- Google OAuth Client (Jetty) -->
 		<dependency>
 			<groupId>com.google.oauth-client</groupId>
 			<artifactId>google-oauth-client-jetty</artifactId>
-			<version>1.34.1</version>
+			<version>${google.client.jetty.version}</version>
 		</dependency>
 
 		<!-- Google Sheets API -->
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-sheets</artifactId>
-			<version>v4-rev612-1.25.0</version>
+			<version>${google.sheets.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.http-client</groupId>
 			<artifactId>google-http-client-jackson2</artifactId>
-			<version>1.35.0</version>
+			<version>${google.client.jackson.version}</version>
 		</dependency>
 
 		<dependency>
@@ -100,6 +118,20 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
