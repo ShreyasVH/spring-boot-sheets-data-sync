@@ -6,3 +6,6 @@ target
 service-account.json
 compile.log
 server.log
+parentUpdates.txt
+dependencyUpdates.txt
+pluginUpdates.txt
