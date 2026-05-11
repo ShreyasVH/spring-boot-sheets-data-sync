@@ -4,7 +4,7 @@ export DEBUG_PORT=
 # maven 3.8.8 path
 export PATH=
 
-# java 17.0.7 path
+# java 26.0.1 path
 export PATH=
 
 export POSTGRES_IP=
