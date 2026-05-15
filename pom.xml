@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.3</version>
+		<version>4.0.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
@@ -16,12 +16,12 @@
 
 	<properties>
 		<java.version>25</java.version>
-		<lombok.version>1.18.44</lombok.version>
+		<lombok.version>1.18.46</lombok.version>
 		<flyway.version>12.0.0</flyway.version>
 		<google.client.version>2.9.0</google.client.version>
 		<google.client.jetty.version>1.39.0</google.client.jetty.version>
-		<google.sheets.version>v4-rev20251110-2.0.0</google.sheets.version>
-		<jobrunr.version>8.5.1</jobrunr.version>
+		<google.sheets.version>v4-rev20260213-2.0.0</google.sheets.version>
+		<jobrunr.version>8.6.0</jobrunr.version>
 		<google.client.jackson.version>2.1.0</google.client.jackson.version>
 	</properties>
 
