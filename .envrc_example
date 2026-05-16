@@ -22,5 +22,5 @@ export MAIL_APP_PASSWORD=
 
 export GOOGLE_SHEET_ID=
 
-# postgres 16.4 path
+# postgres 18.3 path
 export PATH=
