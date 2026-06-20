@@ -1,7 +1,7 @@
 export PORT=
 export DEBUG_PORT=
 
-# maven 3.9.15 path
+# maven 3.9.16 path
 export PATH=
 
 # java 26.0.1 path
@@ -22,5 +22,5 @@ export MAIL_APP_PASSWORD=
 
 export GOOGLE_SHEET_ID=
 
-# postgres 18.3 path
+# postgres 18.4 path
 export PATH=
