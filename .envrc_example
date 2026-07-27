@@ -4,7 +4,7 @@ export DEBUG_PORT=
 # maven 3.9.16 path
 export PATH=
 
-# java 26.0.1 path
+# java 26.0.2 path
 export PATH=
 export JAVA_HOME=
 
