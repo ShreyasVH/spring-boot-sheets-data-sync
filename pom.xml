@@ -17,11 +17,11 @@
 	<properties>
 		<java.version>25</java.version>
 		<lombok.version>1.18.46</lombok.version>
-		<flyway.version>13.0.0</flyway.version>
+		<flyway.version>13.1.0</flyway.version>
 		<google.client.version>2.9.0</google.client.version>
 		<google.client.jetty.version>1.39.0</google.client.jetty.version>
 		<google.sheets.version>v4-rev20260610-2.0.0</google.sheets.version>
-		<jobrunr.version>8.7.1</jobrunr.version>
+		<jobrunr.version>8.8.0</jobrunr.version>
 		<google.client.jackson.version>2.2.0</google.client.jackson.version>
 	</properties>
 
