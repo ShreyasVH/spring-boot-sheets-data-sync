@@ -17,12 +17,13 @@
 	<properties>
 		<java.version>25</java.version>
 		<lombok.version>1.18.46</lombok.version>
-		<flyway.version>13.1.0</flyway.version>
+		<flyway.version>13.2.0</flyway.version>
 		<google.client.version>2.9.0</google.client.version>
 		<google.client.jetty.version>1.39.0</google.client.jetty.version>
 		<google.sheets.version>v4-rev20260610-2.0.0</google.sheets.version>
-		<jobrunr.version>8.8.0</jobrunr.version>
+		<jobrunr.version>8.8.1</jobrunr.version>
 		<google.client.jackson.version>2.2.0</google.client.jackson.version>
+		<postgresql.version>42.7.13</postgresql.version>
 	</properties>
 
 	<dependencies>
@@ -40,6 +41,7 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
+			<version>${postgresql.version}</version>
 		</dependency>
 
 		<dependency>
