@@ -16,9 +16,9 @@
 
 	<properties>
 		<java.version>25</java.version>
-		<lombok.version>1.18.46</lombok.version>
-		<flyway.version>13.3.0</flyway.version>
-		<google.client.version>2.9.0</google.client.version>
+		<lombok.version>1.18.48</lombok.version>
+		<flyway.version>13.6.0</flyway.version>
+		<google.client.version>2.9.1</google.client.version>
 		<google.client.jetty.version>1.39.0</google.client.jetty.version>
 		<google.sheets.version>v4-rev20260610-2.0.0</google.sheets.version>
 		<jobrunr.version>8.8.2</jobrunr.version>
